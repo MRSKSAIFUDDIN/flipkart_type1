@@ -1,0 +1,274 @@
+Adding Bootstrap 
+Google-> Bootstrap -> copy css and paste it in index.html head section.
+
+then copy js line and paste it below body tag.
+
+************************
+ADD Google font awsome
+
+Font Awesome-> free -> generate kit
+ <script src="https://kit.fontawesome.com/b7926f3752.js" crossorigin="anonymous"></script>
+
+*****************************
+To change port 
+
+ng serve --port 4100
+
+****************************.
+Delete all app.module.html codes
+
+Create component in app folder.
+ng g c component/header
+ng g c component/cart
+ng g c component/products
+
+********************************
+Use fakestoreapi.com to fetch all the product list.
+
+Create a folder service inside app.
+create api service,
+
+ng g s service/api
+********************************
+
+make a header 
+
+open header html file.
+call it from app.module.html
+
+header-> div navbar -> div navbar-brand -> i;  strong; div form-group -> input class= form-control [make form-control scss;] ; span search-icon [scss]; 
+
+add div.btn and icon and number of cart items.
+
+header completed
+
+***************
+In products section, add a dashboard of item list, 
+create div card-top and add scss properties for it;
+
+fetch filpkart dashboard images and apply here,
+
+***********************
+
+Fake Api for products list: from postman
+https://fakestoreapi.com/products
+
+in get section paste it and send it
+
+It will generate json data,
+
+To use that we create api service, from service folder.
+
+now, import HttpClientModule in app.module.ts 
+and then in app.services.ts inside Service folder, constructor invoke it.
+
+constructor(private http: HttpClient 
+***********************************
+
+now, api method building,.
+
+the api will be
+https://fakestoreapi.com/products
+
+ getProduct(){
+    return this.http.get<any>("https://fakestoreapi.com/products")
+    .pipe(map((res:any)=>{
+      return res;
+    }))
+  }
+
+ call this api from product list,
+  
+
+***************************************.
+
+to store all the product list create a list
+in products.component.ts file, and call api from constructor to store all data into it.
+constructor(private api: ApiService)
+
+now, from ngOnInit call it and it looks like,
+
+ ngOnInit(): void {
+    this.api.getProduct()
+    .subscribe(res=>{
+      this.productList = res;
+    })
+  }
+
+*****************************
+
+Now the data are stored inside the product lIst, to show we use cart 
+
+To Add cart we use products.component.html file,
+
+create div container -> row -> ng-container ngFor loop -> div card with img title description and price and a button
+
+use interpolation inside tags.
+
+and add styles as
+style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100ch;"
+
+to decorate the text.
+to decorate the images use .card img scss
+
+and it looks great.
+*******************************
+
+... CART PAGE ...
+
+lets configure routing
+
+In app.routing.modules.ts, create paths in routes array.
+
+{path:'', redirectTo:'products', pathMatch:'full'},
+  {path:'products', component: ProductsComponent},
+  {path:'cart', component: CartComponent}
+
+As routing is done, now do router links.
+
+to do it, go to app.component.html
+and 
+remove app-product tag and add router-outlet tag.
+
+after that link is http://localhost:4200/products
+
+
+*****************************
+To add shop component I do,
+1> ng g c component/shop
+2> path add in routing module
+3> shop.component.ts import APIService
+4> fetch from api,
+the api will be
+https://fakestoreapi.com/products
+
+unsuccessfull try
+
+*********************************
+{
+"id": 1,
+"title": "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+"price": 109.95,
+"description": "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+"category": "men's clothing",
+"image": "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+"rating": {
+    "rate": 3.9,
+          "count": 120
+        }
+
+
+***************************
+
+cart -> div container -> div card -> h5 Mycart;
+
+div center -> img, empty cart, add ,button.
+
+write scss for it.
+
+*********************************
+Inside ng-container paste above code,
+
+and ng-container -> div container -> div card-table -> div cart-product table 
+
+write scss for it.
+
+********************************
+
+Generate service for card
+
+ng g s service/cart
+
+add some methods to perform operations over the products.
+
+and then in product.ts add 
+cart Service in constructor,
+
+and make a method addtocart and call it from .html file.
+
+add this.productList.forEach((a:any) => {
+        Object.assign(a,{quantity:1, total:a.price});
+      }); in ngOnInit method of prod.com.ts
+
+***********************
+product-> .ts -> cart.service.ts method execute.
+
+Go to header -> add routeLink='cart'
+
+**************
+in header component cart no , shown 
+to it, open .ts file, and add Cart Service in constructor.
+
+****************
+To count the no of item declare
+public totalItem : number = 0;
+
+In ngOnInit call getProducts api and subscribe it.
+
+totalItem interpolate it from .html file.
+
+**********************
+
+open cart.component.ts for show all records we do some method calls.
+
+public products :any = [];
+public grandTotal : number = 0 ;
+
+import cartService inside constructor.
+
+constructor(private cartService :CartService) { }
+
+In ngOnInit call some apis.
+
+Inside cartservice.ts set getTotalPrice():number
+and  })
+    return grandTotal;
+  }
+
+**************************
+open cart component.html
+
+inside tr -> ngFor
+and products same  as .ts file attrivute
+
+now interpolate here all the data values.
+
+****************************
+
+now in button click on event call 
+removeItem(item)
+
+make this func in.ts file.
+
+removeItem(item:any){
+    this.cartService.removeCartItem(item);
+  }
+
+  emptycart(){
+    this.cartService.removeAllCart();
+  }
+
+*********************
+in cart.html
+ng container condition is 
+*ngIf="products.length != 0"
+
+then add router link to shop now button.
+
+**********************
+
+Now for number checking, go to cart service.ts
+
+this.productList.next(this.cartItemList); // update
+
+*********************
+
+empty cart , etc button add inside cart 
+
+Open cart.comp.html 
+add 3 buttons 
+
+implement function call.
+
+**********************
+
